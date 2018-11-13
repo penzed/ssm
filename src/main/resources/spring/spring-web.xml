@@ -15,6 +15,9 @@
 		(1)自动注册DefaultAnootationHandlerMapping,AnotationMethodHandlerAdapter 
 		(2)提供一些列：数据绑定，数字和日期的format @NumberFormat, @DateTimeFormat, xml,json默认读写支持 
 	-->
+<!--
+	springmvc使用<mvc:annotation-driven>自动加载RequestMappingHandlerMapping和RequestMappingHandlerAdapter，可用在springmvc.xml配置文件中使用<mvc:annotation-driven>替代注解处理器和适配器的配置。
+-->
 	<mvc:annotation-driven />
 	
 	<!-- 2.静态资源默认servlet配置
@@ -22,6 +25,18 @@
 		(2)允许使用"/"做整体映射
 	 -->
 	 <mvc:default-servlet-handler/>
+
+	<!--在springMVC-servlet.xml中配置<mvc:default-servlet-handler />后，会在Spring MVC上下文中定义一个org.springframework.web.servlet.resource.DefaultServletHttpRequestHandler，它会像一个检查员，对进入DispatcherServlet的URL进行筛查，如果发现是静态资源的请求，就将该请求转由Web应用服务器默认的Servlet处理，如果不是静态资源的请求，才由DispatcherServlet继续处理。
+
+	一般Web应用服务器默认的Servlet名称是"default"，因此DefaultServletHttpRequestHandler可以找到它。如果你所有的Web应用服务器的默认Servlet名称不是"default"，则需要通过default-servlet-name属性显示指定：
+
+	<mvc:default-servlet-handler default-servlet-name="所使用的Web服务器默认使用的Servlet名称" />
+
+-->
+	<!--方法二：如果在DispatcherServlet中设置url-pattern为 /则必须对静态资源进行访问处理。
+	spring mvc 的<mvc:resources mapping="" location="">实现对静态资源进行映射访问。
+	如下是对js文件访问配置：
+	<mvc:resources location="/js/" mapping="/js/**"/>-->
 	 
 	 <!-- 3.配置jsp 显示ViewResolver -->
 	 <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -29,7 +44,17 @@
 	 	<property name="prefix" value="/WEB-INF/jsp/" />
 	 	<property name="suffix" value=".jsp" />
 	 </bean>
-	 
-	 <!-- 4.扫描web相关的bean -->
+
+	<!--InternalResourceViewResolver：支持JSP视图解析
+	viewClass：JstlView表示JSP模板页面需要使用JSTL标签库，所以classpath中必须包含jstl的相关jar 包；
+	prefix 和suffix：查找视图页面的前缀和后缀，最终视图的址为：
+	前缀+逻辑视图名+后缀，逻辑视图名需要在controller中返回ModelAndView指定，比如逻辑视图名为hello，则最终返回的jsp视图地址 “WEB-INF/jsp/hello.jsp”
+-->
+
+<!--
+	使用组件扫描器省去在spring容器配置每个controller类的繁琐。使用<context:component-scan自动扫描标记@controller的控制器类，配置如下：
+-->
+	<!-- 4.扫描web相关的bean, -->
+	<!-- 扫描controller注解,多个包中间使用半角逗号分隔 -->
 	 <context:component-scan base-package="com.soecode.lyf.web" />
 </beans>

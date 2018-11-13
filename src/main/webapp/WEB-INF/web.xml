@@ -22,3 +22,7 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 </web-app>
+		<!--load-on-startup：表示servlet随服务启动；
+		url-pattern：*.action的请交给DispatcherServlet处理。
+		contextConfigLocation：指定springmvc配置的加载位置，如果不指定则默认加
+		载WEB-INF/[DispatcherServlet 的Servlet 名字]-servlet.xml。-->
